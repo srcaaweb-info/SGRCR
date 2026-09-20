@@ -1,0 +1,6 @@
+{
+  "name": "SGRCR — SRCAA Global Review of Contemporary Research",
+  "description": "An open-access, double-blind, multidisciplinary peer-reviewed academic journal published by Shakti Research Centre and Academia (SRCAA).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
