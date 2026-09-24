@@ -18,7 +18,10 @@ import {
   Save,
   Play,
   Sparkles,
-  Code
+  Code,
+  Server,
+  Eye,
+  ShieldCheck
 } from 'lucide-react';
 import { 
   getManuscriptSubmissions, 
@@ -32,21 +35,25 @@ import {
   StoredManuscript, 
   StoredInquiry 
 } from '../utils/submissionStorage';
+import { ARTICLES } from '../data/journalData';
+import { Article } from '../types';
+import { ArticlePdfViewerModal } from './ArticlePdfViewerModal';
 
 const RECIPIENT_GMAIL = 'srcaacontact@gmail.com';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  defaultTab?: 'manuscripts' | 'inquiries' | 'google-forms' | 'setup';
+  defaultTab?: 'manuscripts' | 'inquiries' | 'server-pdfs' | 'google-forms' | 'setup';
 }
 
 export const EditorialSubmissionsModal: React.FC<Props> = ({ isOpen, onClose, defaultTab = 'manuscripts' }) => {
-  const [activeTab, setActiveTab] = useState<'manuscripts' | 'inquiries' | 'google-forms' | 'setup'>(defaultTab);
+  const [activeTab, setActiveTab] = useState<'manuscripts' | 'inquiries' | 'server-pdfs' | 'google-forms' | 'setup'>(defaultTab);
   const [manuscripts, setManuscripts] = useState<StoredManuscript[]>([]);
   const [inquiries, setInquiries] = useState<StoredInquiry[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activationStatus, setActivationStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [selectedArticleForPdf, setSelectedArticleForPdf] = useState<Article | null>(null);
 
   // Google Form / Sheets API state
   const [googleEndpoint, setGoogleEndpointState] = useState<string>(() => getGoogleFormEndpoint());
@@ -284,6 +291,20 @@ function doPost(e) {
             >
               <MessageSquare className="w-4 h-4" />
               <span>Inquiries ({inquiries.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('server-pdfs')}
+              className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                activeTab === 'server-pdfs' 
+                  ? 'bg-[#781f1d] text-[#ffffff]' 
+                  : 'text-[#421413] hover:bg-[#e5d7d5]'
+              }`}
+            >
+              <Server className="w-4 h-4" />
+              <span>Server PDFs (ISSN)</span>
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-700 text-white font-bold leading-none">8</span>
             </button>
 
             <button
@@ -536,6 +557,108 @@ function doPost(e) {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* TAB: SERVER HOSTED PDF REPOSITORY (ISSN COMPLIANCE) */}
+          {activeTab === 'server-pdfs' && (
+            <div className="space-y-6 text-sm text-[#421413]">
+              {/* Overview banner */}
+              <div className="p-4 sm:p-5 bg-[#ffffff] border border-[#cfb6b3] rounded-xl space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-emerald-100 rounded-lg text-emerald-800">
+                      <Server className="w-5 h-5 text-emerald-700" />
+                    </div>
+                    <div>
+                      <h4 className="font-serif font-bold text-base text-[#1f0707]">
+                        ISSN Compliance: Server-Hosted Full-Text Article PDFs
+                      </h4>
+                      <p className="text-xs text-[#581e1d]">
+                        All 8 published articles are stored and served directly on the journal's official web server repository.
+                      </p>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    8/8 Articles Active
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#581e1d] leading-relaxed">
+                  Per the <strong>ISSN National Centre (CSIR-NIScPR) statutory archiving guidelines</strong>, open-access scholarly journals must maintain full-text PDFs on their autonomous domain server rather than external third-party cloud folders. Readers and indexing bodies can read and download PDFs directly with zero third-party account requirements.
+                </p>
+              </div>
+
+              {/* PDF List Table */}
+              <div className="p-4 sm:p-5 bg-[#ffffff] border border-[#cfb6b3] rounded-xl space-y-4">
+                <h5 className="font-serif font-bold text-sm text-[#1f0707] flex items-center justify-between">
+                  <span>Volume 1 · Issue 1 (2026) Published Articles</span>
+                  <span className="text-xs font-mono text-[#781f1d]">Repository: /public/articles/</span>
+                </h5>
+
+                <div className="space-y-3">
+                  {ARTICLES.map((article) => (
+                    <div 
+                      key={article.id}
+                      className="p-3.5 bg-[#faf6f3] border border-[#cfb6b3] rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3"
+                    >
+                      <div className="space-y-1 flex-1">
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <span className="px-2 py-0.5 bg-[#1f0707] text-[#c97775] font-bold rounded text-[10px]">
+                            Art {article.articleNumber}
+                          </span>
+                          <span className="font-mono text-[11px] text-[#781f1d] font-semibold">
+                            {article.pdfFileName}
+                          </span>
+                          <span className="text-[11px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold border border-emerald-200">
+                            {article.fileSize || 'PDF'}
+                          </span>
+                        </div>
+                        <h6 className="font-semibold text-xs sm:text-sm text-[#1f0707] line-clamp-1">
+                          {article.title}
+                        </h6>
+                        <p className="text-[11px] text-[#581e1d]">
+                          {article.authors.join(', ')} · pp. {article.pages} · DOI: {article.doi}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {/* View in Reader Modal */}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedArticleForPdf(article)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5 text-[#a13533]" />
+                          <span>View PDF</span>
+                        </button>
+
+                        {/* Direct Download */}
+                        <a
+                          href={article.pdfUrl}
+                          download={article.pdfFileName}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#781f1d] hover:bg-[#a13533] text-[#ffffff] text-xs font-semibold rounded-lg transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Download</span>
+                        </a>
+
+                        {/* Open in Tab */}
+                        <a
+                          href={article.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 bg-[#ffffff] hover:bg-[#e9ded8] border border-[#cfb6b3] text-[#421413] rounded-lg transition-colors"
+                          title="Open PDF in new tab"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-[#781f1d]" />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
@@ -854,6 +977,13 @@ function doPost(e) {
             Close
           </button>
         </div>
+
+        {/* Modal for PDF Preview within Submissions Dashboard */}
+        <ArticlePdfViewerModal
+          article={selectedArticleForPdf}
+          isOpen={Boolean(selectedArticleForPdf)}
+          onClose={() => setSelectedArticleForPdf(null)}
+        />
 
       </div>
     </div>

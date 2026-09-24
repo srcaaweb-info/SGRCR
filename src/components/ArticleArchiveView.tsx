@@ -12,10 +12,14 @@ import {
   Calendar, 
   Sparkles,
   BookOpen,
-  Share2
+  Share2,
+  Server,
+  ShieldCheck,
+  Eye
 } from 'lucide-react';
 import { ARTICLES } from '../data/journalData';
 import { Article } from '../types';
+import { ArticlePdfViewerModal } from './ArticlePdfViewerModal';
 
 interface ArticleArchiveViewProps {
   onBackToMain?: () => void;
@@ -28,6 +32,7 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [citationFormat, setCitationFormat] = useState<'apa' | 'bibtex'>('apa');
   const [expandedAbstractId, setExpandedAbstractId] = useState<string | null>(null);
+  const [selectedArticleForPdf, setSelectedArticleForPdf] = useState<Article | null>(null);
 
   const filteredArticles = ARTICLES.filter((article) => {
     const matchesSearch = 
@@ -114,8 +119,9 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
           </div>
 
           <div className="flex items-center gap-2 text-xs font-semibold text-[#781f1d]">
-            <span className="px-2.5 py-1 bg-[#1f0707] text-[#c97775] rounded-full text-[11px] font-bold">
-              Separate Tab View
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-900 text-emerald-100 rounded-full text-[11px] font-bold">
+              <Server className="w-3 h-3 text-emerald-300" />
+              Website Server Repository
             </span>
             <span className="hidden md:inline text-[#581e1d]">
               ISSN India & Open Access Archive (CC BY 4.0)
@@ -131,15 +137,21 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
         {/* Banner Area */}
         <div className="bg-gradient-to-r from-[#1f0707] to-[#421413] text-[#ffffff] rounded-2xl p-6 sm:p-10 shadow-md mb-8">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#a13533]/20 border border-[#a13533]/40 text-[#c97775] text-xs font-bold uppercase tracking-widest mb-3">
-              <Archive className="w-3.5 h-3.5" />
-              Publications & Repository Index
-            </span>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#a13533]/30 border border-[#a13533]/50 text-[#c97775] text-xs font-bold uppercase tracking-widest">
+                <Archive className="w-3.5 h-3.5" />
+                Publications & Repository Index
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                ISSN Requirement Compliant: Hosted on Website Server
+              </span>
+            </div>
             <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl leading-tight">
               Archives & Publications Repository
             </h2>
             <p className="mt-3 text-xs sm:text-sm md:text-base text-[#cfb6b3] leading-relaxed">
-              Explore all published issues, volumes, and peer-reviewed articles published in SGRCR. Each publication includes complete author attributions, abstracts, keywords, citation generator (APA 7th & BibTeX), and direct access to full-text PDF documents.
+              Explore all published issues, volumes, and peer-reviewed articles published in SGRCR. All manuscript PDFs are hosted directly on the journal's official web server with persistent URIs, meeting ISSN National Centre statutory digital archiving requirements.
             </p>
           </div>
         </div>
@@ -191,7 +203,7 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
           {/* Active stats & citation style switcher */}
           <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#cfb6b3] text-xs">
             <span className="text-[#581e1d] font-semibold">
-              Showing <strong className="text-[#1f0707]">{filteredArticles.length}</strong> published article{filteredArticles.length === 1 ? '' : 's'}
+              Showing <strong className="text-[#1f0707]">{filteredArticles.length}</strong> published article{filteredArticles.length === 1 ? '' : 's'} · All 8 available via direct server download
             </span>
 
             <div className="flex items-center gap-2">
@@ -235,7 +247,7 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
               >
                 {/* Header Meta */}
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="px-3 py-1 bg-[#1f0707] text-[#c97775] text-xs font-bold rounded-lg uppercase tracking-wider">
                       Article {article.articleNumber}
                     </span>
@@ -244,6 +256,10 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
                     </span>
                     <span className="text-xs text-[#781f1d] font-semibold">
                       Vol. {article.volume}, Issue {article.issue} ({article.year}) · pp. {article.pages}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-200">
+                      <Server className="w-3 h-3 text-emerald-600" />
+                      Server Hosted
                     </span>
                   </div>
 
@@ -254,15 +270,14 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
 
                 {/* Article Title */}
                 <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#1f0707] leading-snug hover:text-[#781f1d] transition-colors">
-                  <a
-                    href={article.driveLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline inline-flex items-baseline gap-2"
+                  <button
+                    type="button"
+                    onClick={() => setSelectedArticleForPdf(article)}
+                    className="text-left hover:underline inline-flex items-baseline gap-2 cursor-pointer"
                   >
                     <span>{article.title}</span>
-                    <ExternalLink className="w-4 h-4 shrink-0 text-[#781f1d] inline" />
-                  </a>
+                    <Eye className="w-4 h-4 shrink-0 text-[#781f1d] inline" />
+                  </button>
                 </h3>
 
                 {/* Authors */}
@@ -307,6 +322,7 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
                       <p className="whitespace-pre-line leading-relaxed">{article.abstract}</p>
                       <div className="pt-2 text-xs text-[#781f1d] flex flex-wrap gap-4 font-semibold">
                         <span>DOI: {article.doi} (Crossref)</span>
+                        <span>Direct URL: <code className="bg-white px-1 py-0.5 rounded text-[11px] font-mono">{article.pdfUrl}</code></span>
                         <span>License: Open Access CC BY 4.0</span>
                         <span>Double-Blind Peer Reviewed</span>
                       </div>
@@ -317,17 +333,54 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
                 {/* Action Buttons Bar */}
                 <div className="pt-4 border-t border-[#cfb6b3] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                   
-                  {/* Left: Open Article (Google Drive PDF in separate tab) */}
-                  <a
-                    href={article.driveLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-transform hover:-translate-y-0.5"
-                  >
-                    <Download className="w-4 h-4 text-[#a13533]" />
-                    <span>Open Full Article PDF (Drive)</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-[#a13533]" />
-                  </a>
+                  {/* Left: View PDF & Direct Download from Website Server */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* View in Interactive PDF Viewer Modal */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedArticleForPdf(article)}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-transform hover:-translate-y-0.5 cursor-pointer"
+                    >
+                      <Eye className="w-4 h-4 text-[#a13533]" />
+                      <span>View PDF</span>
+                    </button>
+
+                    {/* Direct Server Download */}
+                    <a
+                      href={article.pdfUrl}
+                      download={article.pdfFileName || `sgrcr-article-${article.articleNumber}.pdf`}
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#781f1d] hover:bg-[#a13533] text-[#ffffff] font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-transform hover:-translate-y-0.5"
+                    >
+                      <Download className="w-4 h-4 text-[#ffffff]" />
+                      <span>Download PDF ({article.fileSize || 'Direct'})</span>
+                    </a>
+
+                    {/* Direct link to open raw PDF in new browser tab */}
+                    <a
+                      href={article.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#ffffff] hover:bg-[#e9ded8] border border-[#cfb6b3] text-[#421413] font-semibold text-xs rounded-xl transition-colors"
+                      title="Open raw PDF file in new browser window"
+                    >
+                      <span>Direct Tab</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-[#781f1d]" />
+                    </a>
+
+                    {/* Optional Google Drive Mirror (secondary link) */}
+                    {article.driveLink && article.driveLink !== 'https://drive.google.com/' && (
+                      <a
+                        href={article.driveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#781f1d] hover:underline px-2 py-1 inline-flex items-center gap-1"
+                        title="Secondary Google Drive Mirror"
+                      >
+                        <span className="text-[11px]">Drive Mirror</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
 
                   {/* Right: Copy Citation */}
                   <button
@@ -377,12 +430,19 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
 
       </main>
 
+      {/* In-App PDF Viewer Modal */}
+      <ArticlePdfViewerModal
+        article={selectedArticleForPdf}
+        isOpen={Boolean(selectedArticleForPdf)}
+        onClose={() => setSelectedArticleForPdf(null)}
+      />
+
       {/* Archive Footer */}
       <footer className="bg-[#260d0d] text-[#cfb6b3] py-6 border-t border-[#451a19] text-xs text-center">
         <div className="max-w-7xl mx-auto px-4">
           <p>© 2026 SRCAA — Shakti Research Centre and Academia. Digital Academic Repository.</p>
           <p className="mt-1 text-[#781f1d]">
-            All articles published under Creative Commons CC BY 4.0 license.
+            All articles published under Creative Commons CC BY 4.0 license. Hosted on SGRCR Web Server Repository.
           </p>
         </div>
       </footer>
@@ -390,3 +450,4 @@ export const ArticleArchiveView: React.FC<ArticleArchiveViewProps> = ({ onBackTo
     </div>
   );
 };
+

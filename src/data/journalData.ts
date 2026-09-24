@@ -332,6 +332,9 @@ export const ARTICLES: Article[] = [
     issue: 1,
     year: 2026,
     pages: '1–14',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art01.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art01.pdf',
+    fileSize: '5.8 KB',
     driveLink: 'https://drive.google.com/file/d/1Hu-wST6DfNMwrbWjypvts0pl3eSD1QS1/view',
     doi: '10.xxxx/sgrcr.2026.01.001',
     abstract: `This research paper examines the role of digital marketing in fostering sustainability within the Fast-Moving Consumer Goods (FMCG) sector, with a focus on how conscious consumers and digital innovation collectively shape greener choices in a connected society. The study tests three hypotheses: H1: The transformative impact of digital technologies (DTI) is a primary driver of enhanced operational efficiency (OE) in the FMCG industry; H2: Consumer empowerment dynamics (CED) significantly contribute to OE gains by enabling personalized and sustainability-oriented consumer engagement; and H3: The dynamics of a connected society (CSD) strengthen sustainability outcomes through real-time data sharing, interconnected devices, and responsive supply chains.
@@ -356,6 +359,9 @@ The study concludes that FMCG firms should prioritize investments in digital too
     issue: 1,
     year: 2026,
     pages: '15–28',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art02.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art02.pdf',
+    fileSize: '5.7 KB',
     driveLink: 'https://drive.google.com/file/d/1b1g6LAa6yEDjKt34e94xksqSJb9HUcC2/view?usp=sharing',
     doi: '10.xxxx/sgrcr.2026.01.002',
     abstract: `Artificial Intelligence (AI) has emerged as a transformative force in contemporary business ecosystems, fundamentally reshaping how organisations collect, analyse, and act upon information to make strategic decisions. This paper investigates the multifaceted role of AI in business decision-making across operational, managerial, and strategic levels with a focus on real-world adoption patterns between 2020 and 2025.
@@ -378,6 +384,9 @@ The paper proposes a structured AI Decision Integration Framework (ADIF) as a ro
     issue: 1,
     year: 2026,
     pages: '29–42',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art03.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art03.pdf',
+    fileSize: '5.7 KB',
     driveLink: 'https://drive.google.com/file/d/1yM97IZC77tpk2Ro4IIv8XgxPZ5XlY4_g/view?usp=sharing',
     doi: '10.xxxx/sgrcr.2026.01.003',
     abstract: `Generation Z is rapidly emerging as a dominant segment of the global workforce, bringing distinct expectations shaped by digital transformation, globalization, and post-pandemic workplace realities. This study examines Gen Z expectations from Human Resource (HR) practices with specific focus on workplace flexibility, mental health support, and digital integration, and analyzes their impact on perceived HR effectiveness.
@@ -402,6 +411,9 @@ The study concludes that organizations must redesign HR strategies to align with
     issue: 1,
     year: 2026,
     pages: '43–56',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art04.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art04.pdf',
+    fileSize: '5.7 KB',
     driveLink: 'https://drive.google.com/',
     doi: '10.xxxx/sgrcr.2026.01.004',
     abstract: `Technology has played a critical role in the development of the Indian banking industry, which has undergone significant changes over time. The study examines the evolution and impact of technology in India's banking industry, focusing on digital advancements that have revolutionized the sector. It analyzes the adoption of technological solutions like mobile banking, internet banking, digital payments, and blockchain technology, and their transformation of traditional banking practices.
@@ -418,12 +430,15 @@ The study also provides insights into future prospects and disruptions that emer
   {
     id: 'article-005',
     articleNumber: 5,
-    title: "A Comprehensive Study on Technological Advancements in India's Financial Sector",
+    title: "A Comparative Study on Guilds (Shrenis) and Modern Family Businesses: Continuity of Traditional Trade Wisdom in Contemporary Entrepreneurship",
     authors: ['MR. SACHIN GOWDA K S'],
     volume: 1,
     issue: 1,
     year: 2026,
     pages: '57–70',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art05.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art05.pdf',
+    fileSize: '5.7 KB',
     driveLink: 'https://drive.google.com/',
     doi: '10.xxxx/sgrcr.2026.01.005',
     abstract: `This study investigates the connection between ancient trade wisdom and modern entrepreneurship, focusing specifically on the practices of traditional guilds (Shrenis) and family-run businesses. In historical trade systems, ethical conduct, collective decision-making, and knowledge transfer across generations were central to sustaining economic activity and building strong community networks. Such practices not only ensured financial stability but also reinforced social cohesion and trust, highlighting lessons that remain relevant for contemporary business environments.
@@ -446,6 +461,9 @@ Finally, this comparative analysis provides practical insights for entrepreneurs
     issue: 1,
     year: 2026,
     pages: '71–84',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art06.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art06.pdf',
+    fileSize: '5.6 KB',
     driveLink: 'https://drive.google.com/',
     doi: '10.xxxx/sgrcr.2026.01.006',
     abstract: `This study investigates the impact of fintech on inclusive finance, with a focus on the banking industry. It seeks to comprehend how fintech-driven inclusive finance affects bank profitability and what this means for global financial inclusion. The research will examine current literature, empirical evidence, and data from developing nations to shed light on the relationship between fintech, the banking industry, and inclusive finance.
@@ -468,6 +486,9 @@ Fintech's cost-effectiveness has reduced the financial exclusion gap, making fin
     issue: 1,
     year: 2026,
     pages: '85–98',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art07.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art07.pdf',
+    fileSize: '5.8 KB',
     driveLink: 'https://drive.google.com/',
     doi: '10.xxxx/sgrcr.2026.01.007',
     abstract: `The accelerating convergence of Artificial Intelligence, automation, and digital transformation is fundamentally reshaping the skills landscape for the global business workforce. This paper investigates the critical workforce skills that will define organisational competitiveness by 2030, with a focus on Indian businesses in a digitally transforming economy. A sequential exploratory mixed-methods design is employed: first, a three-round Delphi methodology with a panel of 42 industry experts across seven sectors, followed by a quantitative survey of 278 HR professionals and business leaders.
@@ -490,6 +511,9 @@ A critical finding is that 79.3% of organisations acknowledge the urgency of fut
     issue: 1,
     year: 2026,
     pages: '99–112',
+    pdfUrl: '/articles/sgrcr-vol1-iss1-art08.pdf',
+    pdfFileName: 'sgrcr-vol1-iss1-art08.pdf',
+    fileSize: '5.5 KB',
     driveLink: 'https://drive.google.com/',
     doi: '10.xxxx/sgrcr.2026.01.008',
     abstract: `The integration of artificial intelligence (AI) in education has transformed traditional learning environments by enhancing accessibility, personalization, and efficiency. This study aims to empirically analyze the influence of AI on students’ engagement and learning outcomes in Bengaluru.
@@ -636,4 +660,5 @@ export const JOURNAL_PARTICULARS = [
   { label: 'Accreditation', value: 'ITC Conformity Assessment & Recognition Framework (Est. 2024)' },
   { label: 'Country of Publication', value: 'India' },
   { label: 'Format of Publication', value: 'Online (Open Access) & Perpetual Digital Archive' },
+  { label: 'Digital Preservation / PDF Hosting', value: 'Directly Hosted on Journal Web Server (/articles/*.pdf) — Open Access & Independent Repository' },
 ];

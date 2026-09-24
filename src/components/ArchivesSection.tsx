@@ -10,10 +10,14 @@ import {
   Layers, 
   BookOpen,
   Calendar,
-  Sparkles
+  Sparkles,
+  Server,
+  Eye,
+  ShieldCheck
 } from 'lucide-react';
 import { ARTICLES } from '../data/journalData';
 import { Article } from '../types';
+import { ArticlePdfViewerModal } from './ArticlePdfViewerModal';
 
 interface ArchivesSectionProps {
   onOpenArchives?: () => void;
@@ -22,6 +26,7 @@ interface ArchivesSectionProps {
 export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedAbstractId, setExpandedAbstractId] = useState<string | null>(null);
+  const [selectedArticleForPdf, setSelectedArticleForPdf] = useState<Article | null>(null);
 
   const handleCopyCitation = (article: Article) => {
     const citation = `${article.authors.join(', ')} (${article.year}). ${article.title}. SRCAA Global Review of Contemporary Research (SGRCR), ${article.volume}(${article.issue}), ${article.pages}. https://doi.org/${article.doi}`;
@@ -48,15 +53,21 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
         {/* Section Heading & Separate Tab Notice */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-[#781f1d] text-xs font-bold uppercase tracking-widest border border-gray-200">
-              <Archive className="w-3.5 h-3.5" />
-              Permanent Repository
-            </span>
-            <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-[#1f0707] mt-3">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-[#781f1d] text-xs font-bold uppercase tracking-widest border border-gray-200">
+                <Archive className="w-3.5 h-3.5" />
+                Permanent Digital Repository
+              </span>
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold border border-emerald-200">
+                <Server className="w-3 h-3 text-emerald-600" />
+                Server-Hosted Full Text PDFs
+              </span>
+            </div>
+            <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-[#1f0707] mt-1">
               Archives & Publications
             </h2>
             <p className="mt-2 text-sm sm:text-base text-[#581e1d] max-w-2xl">
-              Every published issue and peer-reviewed manuscript is retained here permanently with persistent metadata, article-level DOI assignments, and open-access PDF access under ISSN India and COPE archiving standards.
+              Every published issue and peer-reviewed manuscript is hosted directly on the journal's official web server with persistent URIs, article-level DOI assignments, and direct open-access PDF downloads in strict compliance with ISSN National Centre (CSIR-NIScPR) requirements.
             </p>
           </div>
 
@@ -95,9 +106,15 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                 </h3>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#581e1d]">
-              <Calendar className="w-4 h-4 text-[#781f1d]" />
-              <span>Published: Bi-annual (January – June 2026)</span>
+            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-[#581e1d]">
+              <span className="inline-flex items-center gap-1.5 bg-[#ffffff] px-2.5 py-1 rounded-md border border-gray-200">
+                <Calendar className="w-3.5 h-3.5 text-[#781f1d]" />
+                Published: Bi-annual (January – June 2026)
+              </span>
+              <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md border border-emerald-200 font-bold">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                8/8 PDFs Server-Hosted
+              </span>
             </div>
           </div>
 
@@ -126,18 +143,21 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                         <span className="text-xs text-[#781f1d] font-semibold">
                           Pages: {article.pages}
                         </span>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          <Server className="w-2.5 h-2.5 text-emerald-600" />
+                          Direct Server PDF
+                        </span>
                       </div>
 
                       <h4 className="font-serif font-bold text-lg sm:text-xl text-[#1f0707] leading-snug hover:text-[#781f1d] transition-colors">
-                        <a 
-                          href={article.driveLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="hover:underline flex items-start gap-1.5"
+                        <button 
+                          type="button"
+                          onClick={() => setSelectedArticleForPdf(article)}
+                          className="text-left hover:underline inline-flex items-start gap-1.5 cursor-pointer"
                         >
-                          {article.title}
-                          <ExternalLink className="w-4 h-4 shrink-0 text-[#781f1d] mt-1" />
-                        </a>
+                          <span>{article.title}</span>
+                          <Eye className="w-4 h-4 shrink-0 text-[#781f1d] mt-1 inline" />
+                        </button>
                       </h4>
 
                       <p className="text-xs sm:text-sm font-semibold text-[#581e1d]">
@@ -174,27 +194,48 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                               Abstract:
                             </p>
                             <p className="whitespace-pre-line leading-relaxed">{article.abstract}</p>
-                            <p className="mt-2 text-[11px] text-[#781f1d]">
-                              <strong>DOI Identifier:</strong> {article.doi} (Crossref)
-                            </p>
+                            <div className="mt-2 pt-2 border-t border-gray-200 flex flex-wrap gap-3 text-[11px] text-[#781f1d]">
+                              <span><strong>DOI Identifier:</strong> {article.doi}</span>
+                              <span><strong>Permanent PDF URL:</strong> <code className="bg-white px-1 py-0.5 rounded border border-gray-200 font-mono text-[10px]">{article.pdfUrl}</code></span>
+                            </div>
                           </div>
                         )}
                       </div>
                     </div>
 
                     {/* Action Buttons Column */}
-                    <div className="flex flex-row lg:flex-col items-center lg:items-stretch gap-2 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-200">
+                    <div className="flex flex-wrap lg:flex-col items-stretch gap-2 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-200 min-w-[200px]">
                       
-                      {/* Open Full Article Link (Google Drive in new tab) */}
+                      {/* View PDF Button (Modal Viewer) */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedArticleForPdf(article)}
+                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] font-bold text-xs sm:text-sm rounded-lg shadow-xs transition-colors cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-[#a13533]" />
+                        <span>View PDF</span>
+                      </button>
+
+                      {/* Download PDF directly from Website Server */}
                       <a
-                        href={article.driveLink}
+                        href={article.pdfUrl}
+                        download={article.pdfFileName || `sgrcr-art-${article.articleNumber}.pdf`}
+                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#781f1d] hover:bg-[#a13533] text-[#ffffff] font-bold text-xs sm:text-sm rounded-lg shadow-xs transition-colors"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download PDF ({article.fileSize || 'Direct'})</span>
+                      </a>
+
+                      {/* Direct browser tab link */}
+                      <a
+                        href={article.pdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] font-bold text-xs sm:text-sm rounded-lg shadow-xs transition-colors"
+                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-[#ffffff] hover:bg-gray-100 border border-gray-200 text-[#421413] text-xs font-semibold rounded-lg transition-colors"
+                        title="Open PDF directly in browser window"
                       >
-                        <Download className="w-4 h-4 text-[#a13533]" />
-                        <span>Open Article (PDF)</span>
-                        <ExternalLink className="w-3 h-3 text-[#a13533]" />
+                        <span>Open Raw PDF</span>
+                        <ExternalLink className="w-3 h-3 text-[#781f1d]" />
                       </a>
 
                       {/* Copy Citation Button */}
@@ -265,7 +306,7 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
             <Archive className="w-5 h-5 text-[#781f1d] shrink-0 mt-0.5" />
             <div>
               <strong className="text-[#1f0707] block mb-1">Perpetual Open Access Archiving</strong>
-              <p>All published manuscripts receive perpetual digital archiving and persistent web URLs to guarantee perpetual scholarly discovery.</p>
+              <p>All published manuscripts receive perpetual digital archiving on our web server and persistent web URLs to guarantee perpetual scholarly discovery.</p>
               <a href="#issn-compliance" className="text-[#781f1d] font-bold hover:underline mt-2 inline-block">
                 Read ISSN India compliance details →
               </a>
@@ -273,6 +314,12 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
           </div>
         </div>
 
+        {/* Modal for In-Page PDF Reader */}
+        <ArticlePdfViewerModal
+          article={selectedArticleForPdf}
+          isOpen={Boolean(selectedArticleForPdf)}
+          onClose={() => setSelectedArticleForPdf(null)}
+        />
       </div>
     </section>
   );

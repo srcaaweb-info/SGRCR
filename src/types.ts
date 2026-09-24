@@ -32,7 +32,10 @@ export interface Article {
   issue: number;
   year: number;
   pages: string;
-  driveLink: string;
+  pdfUrl: string; // Direct on-server / website PDF path (ISSN requirement compliance)
+  fileSize?: string;
+  pdfFileName?: string;
+  driveLink?: string;
   doi: string;
   abstract: string;
   keywords: string[];
