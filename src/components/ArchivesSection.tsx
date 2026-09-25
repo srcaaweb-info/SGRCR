@@ -5,15 +5,13 @@ import {
   FileText, 
   Copy, 
   Check, 
-  Download, 
-  Share2, 
   Layers, 
   BookOpen,
   Calendar,
   Sparkles,
-  Server,
   Eye,
-  ShieldCheck
+  Maximize2,
+  X
 } from 'lucide-react';
 import { ARTICLES } from '../data/journalData';
 import { Article } from '../types';
@@ -26,6 +24,7 @@ interface ArchivesSectionProps {
 export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives }) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedAbstractId, setExpandedAbstractId] = useState<string | null>(null);
+  const [activePdfArticleId, setActivePdfArticleId] = useState<string | null>(null);
   const [selectedArticleForPdf, setSelectedArticleForPdf] = useState<Article | null>(null);
 
   const handleCopyCitation = (article: Article) => {
@@ -58,16 +57,12 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                 <Archive className="w-3.5 h-3.5" />
                 Permanent Digital Repository
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold border border-emerald-200">
-                <Server className="w-3 h-3 text-emerald-600" />
-                Server-Hosted Full Text PDFs
-              </span>
             </div>
             <h2 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-[#1f0707] mt-1">
               Archives & Publications
             </h2>
             <p className="mt-2 text-sm sm:text-base text-[#581e1d] max-w-2xl">
-              Every published issue and peer-reviewed manuscript is hosted directly on the journal's official web server with persistent URIs, article-level DOI assignments, and direct open-access PDF downloads in strict compliance with ISSN National Centre (CSIR-NIScPR) requirements.
+              Every published issue and peer-reviewed manuscript is indexed with persistent URIs, article-level DOI assignments, and open-access PDF viewing in compliance with statutory digital archiving standards.
             </p>
           </div>
 
@@ -111,10 +106,6 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                 <Calendar className="w-3.5 h-3.5 text-[#781f1d]" />
                 Published: Bi-annual (January – June 2026)
               </span>
-              <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md border border-emerald-200 font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                8/8 PDFs Server-Hosted
-              </span>
             </div>
           </div>
 
@@ -143,16 +134,12 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                         <span className="text-xs text-[#781f1d] font-semibold">
                           Pages: {article.pages}
                         </span>
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                          <Server className="w-2.5 h-2.5 text-emerald-600" />
-                          Direct Server PDF
-                        </span>
                       </div>
 
                       <h4 className="font-serif font-bold text-lg sm:text-xl text-[#1f0707] leading-snug hover:text-[#781f1d] transition-colors">
                         <button 
                           type="button"
-                          onClick={() => setSelectedArticleForPdf(article)}
+                          onClick={() => setActivePdfArticleId(activePdfArticleId === article.id ? null : article.id)}
                           className="text-left hover:underline inline-flex items-start gap-1.5 cursor-pointer"
                         >
                           <span>{article.title}</span>
@@ -196,7 +183,7 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                             <p className="whitespace-pre-line leading-relaxed">{article.abstract}</p>
                             <div className="mt-2 pt-2 border-t border-gray-200 flex flex-wrap gap-3 text-[11px] text-[#781f1d]">
                               <span><strong>DOI Identifier:</strong> {article.doi}</span>
-                              <span><strong>Permanent PDF URL:</strong> <code className="bg-white px-1 py-0.5 rounded border border-gray-200 font-mono text-[10px]">{article.pdfUrl}</code></span>
+                              <span><strong>Peer Review:</strong> Double-Blind Reviewed</span>
                             </div>
                           </div>
                         )}
@@ -204,39 +191,17 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
                     </div>
 
                     {/* Action Buttons Column */}
-                    <div className="flex flex-wrap lg:flex-col items-stretch gap-2 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-200 min-w-[200px]">
+                    <div className="flex flex-wrap lg:flex-col items-stretch gap-2 shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-gray-200 min-w-[180px]">
                       
-                      {/* View PDF Button (Modal Viewer) */}
+                      {/* Single View PDF Action */}
                       <button
                         type="button"
-                        onClick={() => setSelectedArticleForPdf(article)}
-                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] font-bold text-xs sm:text-sm rounded-lg shadow-xs transition-colors cursor-pointer"
+                        onClick={() => setActivePdfArticleId(activePdfArticleId === article.id ? null : article.id)}
+                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#1f0707] hover:bg-[#421413] text-[#ffffff] font-bold text-xs sm:text-sm rounded-lg shadow-xs transition-colors cursor-pointer"
                       >
-                        <Eye className="w-3.5 h-3.5 text-[#a13533]" />
-                        <span>View PDF</span>
+                        <Eye className="w-3.5 h-3.5 text-[#c97775]" />
+                        <span>{activePdfArticleId === article.id ? 'Close PDF' : 'View PDF'}</span>
                       </button>
-
-                      {/* Download PDF directly from Website Server */}
-                      <a
-                        href={article.pdfUrl}
-                        download={article.pdfFileName || `sgrcr-art-${article.articleNumber}.pdf`}
-                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 bg-[#781f1d] hover:bg-[#a13533] text-[#ffffff] font-bold text-xs sm:text-sm rounded-lg shadow-xs transition-colors"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Download PDF ({article.fileSize || 'Direct'})</span>
-                      </a>
-
-                      {/* Direct browser tab link */}
-                      <a
-                        href={article.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 lg:flex-initial inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-[#ffffff] hover:bg-gray-100 border border-gray-200 text-[#421413] text-xs font-semibold rounded-lg transition-colors"
-                        title="Open PDF directly in browser window"
-                      >
-                        <span>Open Raw PDF</span>
-                        <ExternalLink className="w-3 h-3 text-[#781f1d]" />
-                      </a>
 
                       {/* Copy Citation Button */}
                       <button
@@ -259,6 +224,45 @@ export const ArchivesSection: React.FC<ArchivesSectionProps> = ({ onOpenArchives
 
                     </div>
                   </div>
+
+                  {/* Embedded PDF Viewer within Article Detail View */}
+                  {activePdfArticleId === article.id && (
+                    <div className="mt-4 rounded-xl border border-gray-300 bg-gray-50 overflow-hidden shadow-sm animate-in fade-in-50 duration-200">
+                      <div className="bg-[#1f0707] text-white px-4 py-2.5 flex items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <FileText className="w-4 h-4 text-[#c97775] shrink-0" />
+                          <span className="font-serif font-bold truncate">{article.title}</span>
+                          <span className="text-gray-300 text-[11px] shrink-0">· pp. {article.pages}</span>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedArticleForPdf(article)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#421413] hover:bg-[#781f1d] text-white rounded text-[11px] font-semibold transition-colors cursor-pointer"
+                            title="Fullscreen Modal"
+                          >
+                            <Maximize2 className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Fullscreen</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setActivePdfArticleId(null)}
+                            className="p-1 hover:bg-[#421413] rounded text-gray-300 hover:text-white transition-colors cursor-pointer"
+                            title="Close Viewer"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="w-full h-[550px] sm:h-[650px] bg-white relative">
+                        <iframe
+                          src={`${article.pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                          title={`Embedded PDF: ${article.title}`}
+                          className="w-full h-full border-0 bg-white"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </article>
               );
             })}

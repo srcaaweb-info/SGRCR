@@ -9,8 +9,7 @@ import {
   ShieldCheck, 
   BookOpen, 
   Check, 
-  Copy,
-  Server
+  Copy
 } from 'lucide-react';
 import { Article } from '../types';
 
@@ -57,9 +56,8 @@ export const ArticlePdfViewerModal: React.FC<ArticlePdfViewerModalProps> = ({
                 <span className="px-2 py-0.5 rounded-sm bg-[#a13533] text-[#ffffff] text-[10px] font-bold uppercase tracking-wider">
                   Article {article.articleNumber}
                 </span>
-                <span className="inline-flex items-center gap-1 text-[11px] text-[#c97775] font-semibold">
-                  <Server className="w-3 h-3 text-emerald-400" />
-                  Website / Server-Hosted PDF
+                <span className="text-[11px] text-[#c97775] font-semibold">
+                  Peer-Reviewed Full Paper
                 </span>
               </div>
               <h3 className="font-serif font-bold text-sm sm:text-base text-[#ffffff] truncate mt-0.5" title={article.title}>
@@ -77,8 +75,7 @@ export const ArticlePdfViewerModal: React.FC<ArticlePdfViewerModalProps> = ({
               title="Download PDF directly to your device"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Download PDF</span>
-              {article.fileSize && <span className="text-[10px] opacity-80">({article.fileSize})</span>}
+              <span className="hidden sm:inline">Download</span>
             </a>
 
             {/* Open in separate native tab */}
@@ -121,9 +118,9 @@ export const ArticlePdfViewerModal: React.FC<ArticlePdfViewerModalProps> = ({
             <span className="text-gray-400">|</span>
             <span>Vol. {article.volume}, Issue {article.issue} ({article.year}) · pp. {article.pages}</span>
             <span className="text-gray-400">|</span>
-            <span className="font-semibold text-emerald-800 flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              ISSN Compliant Permanent URL: <code className="bg-[#ffffff] px-1.5 py-0.5 rounded border border-gray-200 text-[11px] font-mono text-[#1f0707]">{article.pdfUrl}</code>
+            <span className="font-semibold text-[#781f1d] flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#781f1d]" />
+              DOI: <code className="bg-[#ffffff] px-1.5 py-0.5 rounded border border-gray-200 text-[11px] font-mono text-[#1f0707]">{article.doi}</code>
             </span>
           </div>
 
@@ -136,19 +133,6 @@ export const ArticlePdfViewerModal: React.FC<ArticlePdfViewerModalProps> = ({
               {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-[#781f1d]" />}
               <span>{copied ? 'Citation Copied' : 'Copy APA Citation'}</span>
             </button>
-
-            {article.driveLink && article.driveLink !== 'https://drive.google.com/' && (
-              <a
-                href={article.driveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-[#781f1d] hover:underline inline-flex items-center gap-1"
-                title="Google Drive backup mirror"
-              >
-                <span>Google Drive Mirror</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            )}
           </div>
         </div>
 
@@ -160,9 +144,9 @@ export const ArticlePdfViewerModal: React.FC<ArticlePdfViewerModalProps> = ({
             className="w-full h-full border-0 flex-1 bg-white"
           />
           
-          {/* Fallback Notice for browsers or environments blocking nested PDF plugins */}
+          {/* Fallback Notice */}
           <div className="bg-[#ffffff] p-2 text-center text-xs text-[#581e1d] border-t border-gray-200 flex flex-wrap items-center justify-center gap-3">
-            <span>Direct PDF URL: <a href={article.pdfUrl} className="font-mono text-[#781f1d] underline font-semibold" target="_blank" rel="noopener noreferrer">{article.pdfUrl}</a></span>
+            <span>File: <span className="font-mono text-[#781f1d] font-semibold">{article.pdfFileName}</span></span>
             <span className="text-gray-300">·</span>
             <a 
               href={article.pdfUrl} 
@@ -170,15 +154,7 @@ export const ArticlePdfViewerModal: React.FC<ArticlePdfViewerModalProps> = ({
               rel="noopener noreferrer"
               className="font-bold text-[#781f1d] hover:underline inline-flex items-center gap-1"
             >
-              Open in Native Tab <ExternalLink className="w-3 h-3" />
-            </a>
-            <span className="text-gray-300">·</span>
-            <a 
-              href={article.pdfUrl} 
-              download={article.pdfFileName || `sgrcr-art-${article.articleNumber}.pdf`}
-              className="font-bold text-[#421413] hover:underline inline-flex items-center gap-1"
-            >
-              Direct Download ({article.fileSize || 'PDF'}) <Download className="w-3 h-3" />
+              Open in Native Window <ExternalLink className="w-3 h-3" />
             </a>
           </div>
         </div>
