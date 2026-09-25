@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { CookieBanner } from './components/CookieBanner';
+import { TopBar } from './components/TopBar';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { QuickNav } from './components/QuickNav';
+import { IndexingPartners } from './components/IndexingPartners';
 import { AboutSection } from './components/AboutSection';
 import { JournalMetadataSection } from './components/JournalMetadataSection';
 import { AuthorGuidelinesSection } from './components/AuthorGuidelinesSection';
@@ -18,39 +19,13 @@ import { EditorialSubmissionsModal } from './components/EditorialSubmissionsModa
 export default function App() {
   const [currentView, setCurrentView] = useState<'main' | 'archive'>('main');
   const [isSubmissionsModalOpen, setIsSubmissionsModalOpen] = useState(false);
-  const [theme, setTheme] = useState<'warm' | 'dark'>(() => {
-    try {
-      const saved = localStorage.getItem('sgrcr-theme');
-      return saved === 'dark' ? 'dark' : 'warm';
-    } catch {
-      return 'warm';
-    }
-  });
 
   useEffect(() => {
-    try {
-      localStorage.setItem('sgrcr-theme', theme);
-    } catch {
-      // Ignored
-    }
-    if (theme === 'dark') {
-      document.documentElement.classList.add('theme-deep-dark');
-      document.body.classList.remove('bg-[#ffffff]');
-      document.body.classList.remove('bg-[#ede4dc]');
-      document.body.classList.add('bg-[#120404]');
-    } else {
-      document.documentElement.classList.remove('theme-deep-dark');
-      document.body.classList.remove('bg-[#120404]');
-      document.body.classList.remove('bg-[#ede4dc]');
-      document.body.classList.add('bg-[#ffffff]');
-    }
-  }, [theme]);
+    document.body.classList.remove('bg-[#120404]');
+    document.body.classList.remove('bg-[#ede4dc]');
+    document.body.classList.add('bg-[#ffffff]');
+  }, []);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'warm' : 'dark'));
-  };
-
-  // Check URL params on initial load (e.g. ?view=archive or ?tab=archive or ?modal=submissions)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('view') === 'archive' || params.get('tab') === 'archive') {
@@ -71,21 +46,20 @@ export default function App() {
   };
 
   return (
-    <div className={`w-full ${theme === 'dark' ? 'bg-[#120404] text-[#f6ece9]' : 'bg-[#ffffff] text-[#1f0707]'} min-h-screen transition-colors duration-200 overflow-x-hidden`}>
+    <div className="w-full bg-[#ffffff] text-[#1f0707] min-h-screen transition-colors duration-200 overflow-x-hidden">
       {currentView === 'archive' ? (
         <ArticleArchiveView onBackToMain={() => setCurrentView('main')} />
       ) : (
         <div className="flex flex-col min-h-screen w-full max-w-full overflow-x-hidden">
           <CookieBanner />
-          <Navbar 
-            onOpenArticleArchive={handleOpenArticleArchive} 
+          <TopBar onOpenSubmissionsLog={() => setIsSubmissionsModalOpen(true)} />
+          <Navbar
+            onOpenArticleArchive={handleOpenArticleArchive}
             onOpenSubmissionsLog={() => setIsSubmissionsModalOpen(true)}
-            theme={theme}
-            onToggleTheme={toggleTheme}
           />
           <main className="flex-1 w-full max-w-full overflow-x-hidden">
             <Hero onOpenArticleArchive={handleOpenArticleArchive} />
-            <QuickNav onOpenArticleArchive={handleOpenArticleArchive} />
+            <IndexingPartners />
             <AboutSection />
             <JournalMetadataSection />
             <AuthorGuidelinesSection onOpenSubmissionsLog={() => setIsSubmissionsModalOpen(true)} />
@@ -95,14 +69,14 @@ export default function App() {
             <ArchivesSection onOpenArchives={handleOpenArticleArchive} />
             <ContactSection />
           </main>
-          <Footer 
+          <Footer
             onOpenArticleArchive={handleOpenArticleArchive}
             onOpenSubmissionsLog={() => setIsSubmissionsModalOpen(true)}
           />
 
-          <EditorialSubmissionsModal 
-            isOpen={isSubmissionsModalOpen} 
-            onClose={() => setIsSubmissionsModalOpen(false)} 
+          <EditorialSubmissionsModal
+            isOpen={isSubmissionsModalOpen}
+            onClose={() => setIsSubmissionsModalOpen(false)}
           />
         </div>
       )}
